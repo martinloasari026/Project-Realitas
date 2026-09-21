@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Cyber Hero — WebAR (ZapWorks)</title>
+<title>Cyber Hero — WebAR (MindAR)</title>
 <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-<script src="https://libs.zappar.com/zappar-aframe/2.2.2/zappar-aframe.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 <style>
 html, body { margin:0; height:100%; overflow:hidden; font-family:sans-serif; }
 #overlay{position:fixed;left:0;right:0;bottom:0;z-index:9;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));
@@ -14,67 +14,61 @@ background:linear-gradient(0deg,rgba(11,31,58,.92),rgba(11,31,58,0));color:#fff;
 </head>
 <body>
 <div id="overlay">Arahkan kamera ke salah satu ikon misi di flyer</div>
-<a-scene>
-<a-entity zappar-permissions-ui></a-entity>
-<a-entity zappar-compatibility-ui></a-entity>
 
-<a-assets>
-<a-asset-item id="target1" src="./misi1.zpt"></a-asset-item>
-<a-asset-item id="target2" src="./misi2.zpt"></a-asset-item>
-<a-asset-item id="target3" src="./misi3.zpt"></a-asset-item>
-<a-asset-item id="target4" src="./misi4.zpt"></a-asset-item>
-</a-assets>
+<!--
+  imageTargetSrc menunjuk ke SATU file "targets.mind" yang berisi 4 gambar
+  target sekaligus (urutan: misi1, misi2, misi3, misi4). Cara membuat file
+  ini ada di README, cuma perlu 2 menit lewat browser, tanpa install apapun.
+-->
+<a-scene
+  mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiScanning: no; uiLoading: no;"
+  color-space="sRGB"
+  renderer="colorManagement: true, physicallyCorrectLights"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false">
 
-<a-entity camera zappar-camera></a-entity>
+  <a-assets></a-assets>
 
-<a-entity zappar-image="target: #target1" id="group-misi1" visible="false">
-<a-torus color="#1D5FD1" radius="0.6" radius-tubular="0.07" position="0 0.15 0.3"
-animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"></a-torus>
-<a-icosahedron color="#F2C94C" radius="0.28" position="0 0.15 0.3"
-animation="property: rotation; to: 360 360 0; loop: true; dur: 4000; easing: linear"></a-icosahedron>
-<a-text value="PASSWORD GUARDIAN" align="center" color="#1D5FD1" position="0 -0.35 0.3" width="1.6"></a-text>
-<a-text value="Panjang. Unik. Sulit ditebak.\nAktifkan 2FA." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
-</a-entity>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-<a-entity zappar-image="target: #target2" id="group-misi2" visible="false">
-<a-cone color="#F2A900" radius-bottom="0.45" radius-top="0" height="0.6" rotation="180 0 0" position="0 0.15 0.3"
-animation="property: position; to: 0 0.3 0.3; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"></a-cone>
-<a-torus color="#D42A2A" radius="0.35" radius-tubular="0.03" rotation="90 0 0" position="0 0.15 0.3"></a-torus>
-<a-text value="PHISHING HUNTER" align="center" color="#8A5F00" position="0 -0.35 0.3" width="1.6"></a-text>
-<a-text value="S.T.O.P sebelum klik.\nJangan bagikan OTP." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
-</a-entity>
+  <!-- targetIndex 0 = misi1.png -->
+  <a-entity mindar-image-target="targetIndex: 0">
+    <a-torus color="#1D5FD1" radius="0.6" radius-tubular="0.07" position="0 0.15 0.3"
+    animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"></a-torus>
+    <a-icosahedron color="#F2C94C" radius="0.28" position="0 0.15 0.3"
+    animation="property: rotation; to: 360 360 0; loop: true; dur: 4000; easing: linear"></a-icosahedron>
+    <a-text value="PASSWORD GUARDIAN" align="center" color="#1D5FD1" position="0 -0.35 0.3" width="1.6"></a-text>
+    <a-text value="Panjang. Unik. Sulit ditebak.\nAktifkan 2FA." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
+  </a-entity>
 
-<a-entity zappar-image="target: #target3" id="group-misi3" visible="false">
-<a-cylinder color="#158A3E" radius="0.5" height="0.08" position="0 0.15 0.3" opacity="0.9"
-animation="property: scale; to: 1.15 1 1.15; dir: alternate; loop: true; dur: 1400"></a-cylinder>
-<a-sphere color="#eafff0" radius="0.2" position="0 0.28 0.3"></a-sphere>
-<a-text value="PRIVACY DEFENDER" align="center" color="#158A3E" position="0 -0.35 0.3" width="1.6"></a-text>
-<a-text value="THINK sebelum posting.\nJaga data pribadimu." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
-</a-entity>
+  <!-- targetIndex 1 = misi2.png -->
+  <a-entity mindar-image-target="targetIndex: 1">
+    <a-cone color="#F2A900" radius-bottom="0.45" radius-top="0" height="0.6" rotation="180 0 0" position="0 0.15 0.3"
+    animation="property: position; to: 0 0.3 0.3; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"></a-cone>
+    <a-torus color="#D42A2A" radius="0.35" radius-tubular="0.03" rotation="90 0 0" position="0 0.15 0.3"></a-torus>
+    <a-text value="PHISHING HUNTER" align="center" color="#8A5F00" position="0 -0.35 0.3" width="1.6"></a-text>
+    <a-text value="S.T.O.P sebelum klik.\nJangan bagikan OTP." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
+  </a-entity>
 
-<a-entity zappar-image="target: #target4" id="group-misi4" visible="false">
-<a-dodecahedron color="#D42A2A" radius="0.35" position="0 0.15 0.3"
-animation__spin="property: rotation; to: 360 360 0; loop: true; dur: 5000; easing: linear"
-animation__pulse="property: scale; to: 0.7 0.7 0.7; dir: alternate; loop: true; dur: 1200"></a-dodecahedron>
-<a-torus color="#0B1F3A" radius="0.5" radius-tubular="0.025" position="0 0.15 0.3"></a-torus>
-<a-text value="MALWARE ESCAPE" align="center" color="#D42A2A" position="0 -0.35 0.3" width="1.6"></a-text>
-<a-text value="Unduh dari sumber resmi.\nScan sebelum buka file." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
-</a-entity>
+  <!-- targetIndex 2 = misi3.png -->
+  <a-entity mindar-image-target="targetIndex: 2">
+    <a-cylinder color="#158A3E" radius="0.5" height="0.08" position="0 0.15 0.3" opacity="0.9"
+    animation="property: scale; to: 1.15 1 1.15; dir: alternate; loop: true; dur: 1400"></a-cylinder>
+    <a-sphere color="#eafff0" radius="0.2" position="0 0.28 0.3"></a-sphere>
+    <a-text value="PRIVACY DEFENDER" align="center" color="#158A3E" position="0 -0.35 0.3" width="1.6"></a-text>
+    <a-text value="THINK sebelum posting.\nJaga data pribadimu." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
+  </a-entity>
+
+  <!-- targetIndex 3 = misi4.png -->
+  <a-entity mindar-image-target="targetIndex: 3">
+    <a-dodecahedron color="#D42A2A" radius="0.35" position="0 0.15 0.3"
+    animation__spin="property: rotation; to: 360 360 0; loop: true; dur: 5000; easing: linear"
+    animation__pulse="property: scale; to: 0.7 0.7 0.7; dir: alternate; loop: true; dur: 1200"></a-dodecahedron>
+    <a-torus color="#0B1F3A" radius="0.5" radius-tubular="0.025" position="0 0.15 0.3"></a-torus>
+    <a-text value="MALWARE ESCAPE" align="center" color="#D42A2A" position="0 -0.35 0.3" width="1.6"></a-text>
+    <a-text value="Unduh dari sumber resmi.\nScan sebelum buka file." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
+  </a-entity>
 
 </a-scene>
-
-<script>
-  // FIX: zappar-image tidak otomatis sembunyikan kontennya saat target hilang
-  // dari kamera, jadi setiap grup misi harus di-toggle manual lewat event
-  // 'zappar-visible' / 'zappar-notvisible' yang disediakan zappar-aframe.
-  document.querySelectorAll('[zappar-image]').forEach(function (el) {
-    el.addEventListener('zappar-visible', function () {
-      el.setAttribute('visible', true);
-    });
-    el.addEventListener('zappar-notvisible', function () {
-      el.setAttribute('visible', false);
-    });
-  });
-</script>
 </body>
 </html>
