@@ -1,74 +1,254 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Cyber Hero — WebAR (MindAR)</title>
-<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-<style>
-html, body { margin:0; height:100%; overflow:hidden; font-family:sans-serif; }
-#overlay{position:fixed;left:0;right:0;bottom:0;z-index:9;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));
-background:linear-gradient(0deg,rgba(11,31,58,.92),rgba(11,31,58,0));color:#fff;text-align:center;font-size:14px;pointer-events:none}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Hero WebAR</title>
+
+  <!-- A-Frame Library -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <!-- MindAR Image Tracking Library -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    /* Styling dasar layar AR */
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* UI Overlay Misi di Atas Layar Kamera */
+    #mission-ui {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 420px;
+      background: rgba(15, 23, 42, 0.92);
+      color: #ffffff;
+      padding: 16px;
+      border-radius: 14px;
+      border: 2px solid #3b82f6;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      z-index: 99999;
+      display: none; /* Disembunyikan secara default */
+    }
+
+    #mission-title {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #60a5fa;
+      font-size: 18px;
+    }
+
+    #mission-desc {
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      color: #e2e8f0;
+    }
+
+    .mission-btn {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      background-color: #1e293b;
+      color: #ffffff;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .mission-btn:active {
+      transform: scale(0.98);
+    }
+
+    .mission-btn:hover {
+      background-color: #334155;
+    }
+
+    #mission-feedback {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      min-height: 20px;
+    }
+  </style>
 </head>
 <body>
-<div id="overlay">Arahkan kamera ke salah satu ikon misi di flyer</div>
 
-<!--
-  imageTargetSrc menunjuk ke SATU file "targets.mind" yang berisi 4 gambar
-  target sekaligus (urutan: misi1, misi2, misi3, misi4). Cara membuat file
-  ini ada di README, cuma perlu 2 menit lewat browser, tanpa install apapun.
--->
-<a-scene
-  mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiScanning: no; uiLoading: no;"
-  color-space="sRGB"
-  renderer="colorManagement: true, physicallyCorrectLights"
-  vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: false">
+  <!-- UI Pop-up Misi Interaktif -->
+  <div id="mission-ui">
+    <h3 id="mission-title">Judul Misi</h3>
+    <p id="mission-desc">Deskripsi Misi</p>
+    <div id="mission-options"></div>
+    <div id="mission-feedback"></div>
+  </div>
 
-  <a-assets></a-assets>
+  <!-- A-Frame AR Scene -->
+  <!-- Sesuaikan atribut imageTargetSrc ke file .mind milikmu -->
+  <a-scene 
+    mindar-image="imageTargetSrc: ./targets.mind;" 
+    color-space="sRGB" 
+    renderer="colorManagement: true, physicallyCorrectLights" 
+    vr-mode-ui="enabled: false" 
+    device-orientation-permission-ui="enabled: false">
+    
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <!-- Target 1: Password Guardian (Index 0) -->
+    <a-entity id="target-misi1" mindar-image-target="targetIndex: 0">
+      <!-- Objek 3D Bangun Ruang (Kubus) -->
+      <a-box 
+        position="0 0 0" 
+        rotation="0 45 0" 
+        scale="0.5 0.5 0.5" 
+        material="color: #2563eb;" 
+        animation="property: rotation; to: 0 405 0; dur: 4000; easing: linear; loop: true">
+      </a-box>
+    </a-entity>
 
-  <!-- targetIndex 0 = misi1.png -->
-  <a-entity mindar-image-target="targetIndex: 0">
-    <a-torus color="#1D5FD1" radius="0.6" radius-tubular="0.07" position="0 0.15 0.3"
-    animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"></a-torus>
-    <a-icosahedron color="#F2C94C" radius="0.28" position="0 0.15 0.3"
-    animation="property: rotation; to: 360 360 0; loop: true; dur: 4000; easing: linear"></a-icosahedron>
-    <a-text value="PASSWORD GUARDIAN" align="center" color="#1D5FD1" position="0 -0.35 0.3" width="1.6"></a-text>
-    <a-text value="Panjang. Unik. Sulit ditebak.\nAktifkan 2FA." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
-  </a-entity>
+    <!-- Target 2: Phishing Hunter (Index 1) -->
+    <a-entity id="target-misi2" mindar-image-target="targetIndex: 1">
+      <!-- Objek 3D Bangun Ruang (Limas / Piramida) -->
+      <a-cone 
+        position="0 0 0" 
+        scale="0.5 0.5 0.5" 
+        material="color: #d97706;" 
+        animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true">
+      </a-cone>
+    </a-entity>
 
-  <!-- targetIndex 1 = misi2.png -->
-  <a-entity mindar-image-target="targetIndex: 1">
-    <a-cone color="#F2A900" radius-bottom="0.45" radius-top="0" height="0.6" rotation="180 0 0" position="0 0.15 0.3"
-    animation="property: position; to: 0 0.3 0.3; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"></a-cone>
-    <a-torus color="#D42A2A" radius="0.35" radius-tubular="0.03" rotation="90 0 0" position="0 0.15 0.3"></a-torus>
-    <a-text value="PHISHING HUNTER" align="center" color="#8A5F00" position="0 -0.35 0.3" width="1.6"></a-text>
-    <a-text value="S.T.O.P sebelum klik.\nJangan bagikan OTP." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
-  </a-entity>
+    <!-- Target 3: Privacy Defender (Index 2) -->
+    <a-entity id="target-misi3" mindar-image-target="targetIndex: 2">
+      <!-- Objek 3D Bangun Ruang (Tabung) -->
+      <a-cylinder 
+        position="0 0 0" 
+        scale="0.4 0.5 0.4" 
+        material="color: #16a34a;" 
+        animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true">
+      </a-cylinder>
+    </a-entity>
 
-  <!-- targetIndex 2 = misi3.png -->
-  <a-entity mindar-image-target="targetIndex: 2">
-    <a-cylinder color="#158A3E" radius="0.5" height="0.08" position="0 0.15 0.3" opacity="0.9"
-    animation="property: scale; to: 1.15 1 1.15; dir: alternate; loop: true; dur: 1400"></a-cylinder>
-    <a-sphere color="#eafff0" radius="0.2" position="0 0.28 0.3"></a-sphere>
-    <a-text value="PRIVACY DEFENDER" align="center" color="#158A3E" position="0 -0.35 0.3" width="1.6"></a-text>
-    <a-text value="THINK sebelum posting.\nJaga data pribadimu." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
-  </a-entity>
+    <!-- Target 4: Malware Escape (Index 3) -->
+    <a-entity id="target-misi4" mindar-image-target="targetIndex: 3">
+      <!-- Objek 3D Bangun Ruang (Bola / Sphere) -->
+      <a-sphere 
+        position="0 0 0" 
+        radius="0.4" 
+        material="color: #dc2626;" 
+        animation="property: scale; to: 1.2 1.2 1.2; dir: alternate; dur: 1000; loop: true">
+      </a-sphere>
+    </a-entity>
 
-  <!-- targetIndex 3 = misi4.png -->
-  <a-entity mindar-image-target="targetIndex: 3">
-    <a-dodecahedron color="#D42A2A" radius="0.35" position="0 0.15 0.3"
-    animation__spin="property: rotation; to: 360 360 0; loop: true; dur: 5000; easing: linear"
-    animation__pulse="property: scale; to: 0.7 0.7 0.7; dir: alternate; loop: true; dur: 1200"></a-dodecahedron>
-    <a-torus color="#0B1F3A" radius="0.5" radius-tubular="0.025" position="0 0.15 0.3"></a-torus>
-    <a-text value="MALWARE ESCAPE" align="center" color="#D42A2A" position="0 -0.35 0.3" width="1.6"></a-text>
-    <a-text value="Unduh dari sumber resmi.\nScan sebelum buka file." align="center" color="#0B1F3A" position="0 -0.55 0.3" width="1.1"></a-text>
-  </a-entity>
+  </a-scene>
 
-</a-scene>
+  <!-- Script Logika Misi & Event Listener -->
+  <script>
+    // 1. Data Soal/Misi berdasarkan Flyer Cyber Hero
+    const missionData = {
+      "misi1": {
+        title: "Misi 1: Password Guardian",
+        desc: "Manakah kombinasi password yang paling aman untuk mengunci akun digitalmu?",
+        options: [
+          { text: "123456", correct: false, reason: "Terlalu mudah ditebak!" },
+          { text: "B!nt4ng2026#Langit", correct: true, reason: "Tepat! Memenuhi syarat 12+ karakter, ada huruf besar/kecil, angka & simbol." }
+        ]
+      },
+      "misi2": {
+        title: "Misi 2: Phishing Hunter",
+        desc: "Kamu dapat SMS: 'Selamat Anda Menang 50 Juta! Klik bit.ly/klaim-hadiah'. Apa tindakanmu?",
+        options: [
+          { text: "Klik tautan secepatnya", correct: false, reason: "Waspada! Itu tautan palsu/phishing." },
+          { text: "Abaikan & Ingat S.T.O.P", correct: true, reason: "Tepat! Teliti pengirim dan jangan klik tautan mencurigakan." }
+        ]
+      },
+      "misi3": {
+        title: "Misi 3: Privacy Defender",
+        desc: "Manakah data pribadi yang TIDAK BOLEH kamu unggah ke media sosial?",
+        options: [
+          { text: "Foto Kartu Pelajar, NIK & OTP", correct: true, reason: "Benar! Lindungi privasi dan data sensitifmu." },
+          { text: "Foto kegiatan ekstrakurikuler", correct: false, reason: "Foto kegiatan aman dibagikan jika sudah dapat izin." }
+        ]
+      },
+      "misi4": {
+        title: "Misi 4: Malware Escape",
+        desc: "Temanmu mengirim file aplikasi 'Game-Gratis.apk' via WhatsApp. Langkah aman mencegah malware?",
+        options: [
+          { text: "Langsung Install APK", correct: false, reason: "Bahaya! File .apk dari grup chat bisa terinfeksi malware." },
+          { text: "Gunakan Prinsip S.A.F.E (Unduh dari Store Resmi)", correct: true, reason: "Hebat! Hanya unduh aplikasi dari Play Store / App Store resmi." }
+        ]
+      }
+    };
+
+    // 2. Fungsi Menampilkan Misi di UI Overlay
+    function showMission(misiKey) {
+      const data = missionData[misiKey];
+      if (!data) return;
+
+      document.getElementById('mission-title').innerText = data.title;
+      document.getElementById('mission-desc').innerText = data.desc;
+      
+      const optionsDiv = document.getElementById('mission-options');
+      const feedbackDiv = document.getElementById('mission-feedback');
+      
+      optionsDiv.innerHTML = '';
+      feedbackDiv.innerHTML = '';
+
+      data.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'mission-btn';
+        btn.innerText = opt.text;
+        btn.onclick = () => {
+          if (opt.correct) {
+            feedbackDiv.innerHTML = `<span style="color: #4ade80;">✔ ${opt.reason}</span>`;
+          } else {
+            feedbackDiv.innerHTML = `<span style="color: #f87171;">❌ ${opt.reason}</span>`;
+          }
+        };
+        optionsDiv.appendChild(btn);
+      });
+
+      document.getElementById('mission-ui').style.display = 'block';
+    }
+
+    // 3. Fungsi Menyembunyikan Misi
+    function hideMission() {
+      document.getElementById('mission-ui').style.display = 'none';
+    }
+
+    // 4. Hubungkan Pemicu Kamera (MindAR Events) dengan UI Misi
+    document.addEventListener("DOMContentLoaded", () => {
+      const target1 = document.querySelector("#target-misi1");
+      const target2 = document.querySelector("#target-misi2");
+      const target3 = document.querySelector("#target-misi3");
+      const target4 = document.querySelector("#target-misi4");
+
+      if (target1) {
+        target1.addEventListener("targetFound", () => showMission("misi1"));
+        target1.addEventListener("targetLost", hideMission);
+      }
+      if (target2) {
+        target2.addEventListener("targetFound", () => showMission("misi2"));
+        target2.addEventListener("targetLost", hideMission);
+      }
+      if (target3) {
+        target3.addEventListener("targetFound", () => showMission("misi3"));
+        target3.addEventListener("targetLost", hideMission);
+      }
+      if (target4) {
+        target4.addEventListener("targetFound", () => showMission("misi4"));
+        target4.addEventListener("targetLost", hideMission);
+      }
+    });
+  </script>
+
 </body>
 </html>
